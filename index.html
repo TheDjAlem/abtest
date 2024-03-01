@@ -39,15 +39,21 @@
 
         .video h2 {
             margin-top: 10px;
-            font-size: 18px;
-            color: #333;
+            font-size: 16px;
+            color: rgb(15, 15, 15);
             margin-bottom: 5px;
         }
 
         .video p {
             font-size: 14px;
-            color: #666;
+            color: rgb(96, 96, 96);
             margin: 0;
+        }
+
+        .video .info {
+            margin-top: 5px;
+            font-size: 14px;
+            color: rgb(96, 96, 96);
         }
 
         .form-group {
@@ -92,11 +98,13 @@
             <img src="thumbnail_placeholder.png" alt="Thumbnail A">
             <h2>Title A</h2>
             <p>Creator A</p>
+            <p class="info">100,000 views • 2 days ago</p>
         </div>
         <div class="video" id="videoB">
             <img src="thumbnail_placeholder.png" alt="Thumbnail B">
             <h2>Title B</h2>
             <p>Creator B</p>
+            <p class="info">50,000 views • 3 days ago</p>
         </div>
         <div class="form-group">
             <label for="thumbnailA">Thumbnail A:</label>
@@ -147,6 +155,9 @@
 
             var creatorElement = videoElement.querySelector('p');
             creatorElement.textContent = creator;
+
+            var infoElement = videoElement.querySelector('.info');
+            infoElement.textContent = "100,000 views • 2 days ago"; // Example text, replace with actual data
         }
     </script>
 </body>
