@@ -6,67 +6,148 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>A/B Testing</title>
     <style>
-        /* Styles here */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f9f9f9;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .video {
+            border: 1px solid #ccc;
+            margin-bottom: 20px;
+            padding: 20px;
+            overflow: hidden;
+            border-radius: 8px;
+        }
+
+        .video img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+        }
+
+        .video h2 {
+            margin-top: 10px;
+            font-size: 16px;
+            color: rgb(15, 15, 15);
+            margin-bottom: 5px;
+        }
+
+        .video p {
+            font-size: 14px;
+            color: rgb(96, 96, 96);
+            margin: 0;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .form-group input[type="file"],
+        .form-group input[type="text"] {
+            width: calc(100% - 20px);
+            padding: 8px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            margin-right: 10px;
+        }
+
+        .form-group button {
+            padding: 8px 20px;
+            font-size: 16px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .form-group button:hover {
+            background-color: #45a049;
+        }
     </style>
 </head>
 
 <body>
     <div class="container">
-        <!-- Video elements and form inputs here -->
+        <div class="video" id="videoA">
+            <img src="thumbnail_placeholder.png" alt="Thumbnail A">
+            <h2>Title A</h2>
+            <p>Creator A</p>
+        </div>
+        <div class="video" id="videoB">
+            <img src="thumbnail_placeholder.png" alt="Thumbnail B">
+            <h2>Title B</h2>
+            <p>Creator B</p>
+        </div>
+        <div class="form-group">
+            <label for="thumbnailA">Thumbnail A:</label>
+            <input type="file" id="thumbnailA" onchange="updateVideo('A')">
+            <input type="text" id="titleA" value="Title A" oninput="updateVideo('A')">
+            <input type="text" id="creatorA" value="Creator A" oninput="updateVideo('A')">
+        </div>
+        <div class="form-group">
+            <label for="thumbnailB">Thumbnail B:</label>
+            <input type="file" id="thumbnailB" onchange="updateVideo('B')">
+            <input type="text" id="titleB" value="Title B" oninput="updateVideo('B')">
+            <input type="text" id="creatorB" value="Creator B" oninput="updateVideo('B')">
+        </div>
     </div>
 
     <script>
         function updateVideo(video) {
-            // Update video function here
-        }
-
-        function saveABTest() {
-            var videoA = {
-                thumbnail: document.getElementById('thumbnailA').value,
-                title: document.getElementById('titleA').value,
-                creator: document.getElementById('creatorA').value
-            };
-            var videoB = {
-                thumbnail: document.getElementById('thumbnailB').value,
-                title: document.getElementById('titleB').value,
-                creator: document.getElementById('creatorB').value
-            };
-
-            var abTest = {
-                videoA: videoA,
-                videoB: videoB
-            };
-
-            var abTestCode = btoa(JSON.stringify(abTest)); // Encode the A/B test data to base64
-
-            // Redirect to the URL with the A/B test code as a parameter
-            window.location.href = window.location.origin + '/ab/' + abTestCode;
-        }
-
-        function loadABTest() {
-            var abTestCode = window.location.pathname.split('/').pop(); // Get the A/B test code from the URL
-            if (abTestCode) {
-                try {
-                    var abTest = JSON.parse(atob(abTestCode)); // Decode and parse the A/B test data from base64
-                    document.getElementById('thumbnailA').value = abTest.videoA.thumbnail;
-                    document.getElementById('titleA').value = abTest.videoA.title;
-                    document.getElementById('creatorA').value = abTest.videoA.creator;
-                    document.getElementById('thumbnailB').value = abTest.videoB.thumbnail;
-                    document.getElementById('titleB').value = abTest.videoB.title;
-                    document.getElementById('creatorB').value = abTest.videoB.creator;
-                    updateVideo('A');
-                    updateVideo('B');
-                    alert('A/B test loaded!');
-                } catch (error) {
-                    alert('Error loading A/B test: ' + error.message);
-                }
+            var thumbnailInput, titleInput, creatorInput, videoElement;
+            if (video === 'A') {
+                thumbnailInput = document.getElementById('thumbnailA');
+                titleInput = document.getElementById('titleA');
+                creatorInput = document.getElementById('creatorA');
+                videoElement = document.getElementById('videoA');
+            } else if (video === 'B') {
+                thumbnailInput = document.getElementById('thumbnailB');
+                titleInput = document.getElementById('titleB');
+                creatorInput = document.getElementById('creatorB');
+                videoElement = document.getElementById('videoB');
             } else {
-                alert('No A/B test code found in the URL.');
+                return;
             }
-        }
 
-        // Load the A/B test when the page loads
-        loadABTest();
+            var thumbnailFile = thumbnailInput.files[0];
+            var title = titleInput.value;
+            var creator = creatorInput.value;
+
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                var imgElement = videoElement.querySelector('img');
+                imgElement.src = e.target.result;
+            };
+            if (thumbnailFile) {
+                reader.readAsDataURL(thumbnailFile);
+            }
+
+            var titleElement = videoElement.querySelector('h2');
+            titleElement.textContent = title;
+
+            var creatorElement = videoElement.querySelector('p');
+            creatorElement.textContent = creator;
+        }
     </script>
 </body>
 
